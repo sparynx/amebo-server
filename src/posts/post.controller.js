@@ -2,21 +2,34 @@ const Post = require("./post.model");
 
 const createPost = async (req, res) => {
   try {
-    const { title, content, imageUrl, authorId, authorName, categories } = req.body; // Added authorName
+    const { title, content, imageUrl, authorId, authorName, categories } = req.body;
     const newPost = new Post({ 
       title, 
       content, 
       imageUrl, 
       authorId,
       categories, 
-      authorName // Include authorName in new post
+      authorName
     });
     await newPost.save();
+    
+    // Get io instance and emit new post event
+    const io = req.app.get('io');
+    io.emit('newPost', {
+      post: newPost,
+      notification: {
+        title: "New Post Created!",
+        message: `${authorName} just shared: ${title}`,
+        type: "success"
+      }
+    });
+    
     res.status(201).json(newPost);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 const getAllPosts = async (req, res) => {
   try {

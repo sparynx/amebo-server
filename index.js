@@ -2,6 +2,9 @@ const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
 const mongoose = require('mongoose');
+const http = require('http'); // Add this
+const { Server } = require('socket.io'); // Add this
+
 
 
 const postRoutes = require("./src/posts/post.route");
@@ -9,15 +12,39 @@ const likeRoutes = require("./src/likes/likes.router");
 const commentRoutes = require("./src/comments/comment.router");
 const userRoutes = require("./src/user/user.route");
 
+const server = http.createServer(app); // Create HTTP server
+const io = new Server(server, {  // Initialize Socket.IO with server
+  cors: {
+    origin: "https://ameboapp.vercel.app",
+    credentials: true
+  }
+});
+
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
 app.use(cors({
-    origin: ["https://ameboapp.vercel.app" ],
+    origin: "https://ameboapp.vercel.app" ,
     credentials: true
 }));
+
+
+// Make io instance available throughout the app
+app.set('io', io);
+
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+  
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
+
+
 
 // Routes
 app.use("/api/posts", postRoutes);
