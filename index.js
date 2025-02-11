@@ -12,6 +12,12 @@ const likeRoutes = require("./src/likes/likes.router");
 const commentRoutes = require("./src/comments/comment.router");
 const userRoutes = require("./src/user/user.route");
 
+
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+
 const server = http.createServer(app); // Create HTTP server
 const io = new Server(server, {  // Initialize Socket.IO with server
   cors: {
@@ -20,8 +26,6 @@ const io = new Server(server, {  // Initialize Socket.IO with server
   }
 });
 
-const app = express();
-const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
