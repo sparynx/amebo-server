@@ -169,6 +169,6 @@ async function main() {
 main().catch(err => console.log("MongoDB connection error:", err));
 
 // Start Server
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });

@@ -15,6 +15,7 @@ const createPost = async (req, res) => {
     
     // Get io instance and emit new post event
     const io = req.app.get('io');
+    console.log('Emitting new post notification'); // Debug log
     io.emit('newPost', {
       post: newPost,
       notification: {
@@ -26,10 +27,10 @@ const createPost = async (req, res) => {
     
     res.status(201).json(newPost);
   } catch (error) {
+    console.error('Error in createPost:', error); // Debug log
     res.status(500).json({ error: error.message });
   }
 };
-
 
 const getAllPosts = async (req, res) => {
   try {
